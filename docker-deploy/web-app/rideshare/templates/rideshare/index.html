@@ -1,0 +1,9 @@
+{% if user_list %}
+    <ul>
+    {% for user in user_list %}
+        <li><a href="{% url 'rideshare:detail' user.id %}">{{ user.first_name_text }}</a></li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No users are available.</p>
+{% endif %}
