@@ -25,21 +25,15 @@ SECRET_KEY = 'django-insecure-1bmayny2iodm9k+tp+1)l59d1j-i$ej*)33-*wkp=#7+v@hci6
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['vcm-38544.vm.duke.edu','127.0.0.1']
+ALLOWED_HOSTS = ['vcm-38544.vm.duke.edu','127.0.0.1','vcm-38363.vm.duke.edu']
 
-INTERNAL_IPS = [
-    # ...
-    "127.0.0.1",
-    'vcm-38544.vm.duke.edu',
-    # ...
-]
+
 # Application definition
 
 INSTALLED_APPS = [
     'rideshare.apps.RideshareConfig',
     'django.contrib.admin',
     'django.contrib.auth',
-    'debug_toolbar',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
@@ -48,7 +42,6 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    "debug_toolbar.middleware.DebugToolbarMiddleware",
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -62,7 +55,7 @@ ROOT_URLCONF = 'project1.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / "templates"],
+        'DIRS': [],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
