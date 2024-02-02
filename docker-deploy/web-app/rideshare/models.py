@@ -22,7 +22,7 @@ def get_default_driver():
     return Driver.object.get(name='default')
 
 class Driver(models.Model):
-    user = models.ForeignKey(User, on_delete=models.SET(get_default_user))
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     vehicle_type = models.CharField(max_length=200)
     max_passengers = models.IntegerField()
     plate_number = models.CharField(max_length=200)
@@ -50,8 +50,8 @@ class Ride(models.Model):
     end_loc = models.CharField(max_length=200)
     create_time = models.DateTimeField("time created")
     end_time = models.DateTimeField("time completed")
-    driver_user = models.ForeignKey(Driver, on_delete=models.SET(get_default_driver))
-    request_user = models.ForeignKey(Rider, on_delete=models.SET(get_default_rider))
+    driver_user = models.ForeignKey(Driver, on_delete=models.CASCADE)
+    request_user = models.ForeignKey(Rider, on_delete=models.CASCADE)
 
     def __str__(self):
         return f'({self.status}, {self.driver_user}, {self.request_user}, {self.ride_id})'

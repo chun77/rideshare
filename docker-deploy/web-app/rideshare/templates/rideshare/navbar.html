@@ -21,11 +21,11 @@
   </div>
 
   <span class="hello-msg">Hello, {{request.user}}</span>
-  {% if request.user.id %}
+  {% if isDriver %}
   <span><a class='hello-msg' href = "{% url 'rideshare:editdriverinfo' %}">Go to Driver Page</a></span>
   {% else %}
   <span><a class='hello-msg' href = "{% url 'rideshare:driverregister' %}">Become a Driver</a></span>
-
+  {% endif %}
   <span ><a  class="hello-msg" href="{% url 'rideshare:logout' %}">Logout</a></span>
 
 </nav>

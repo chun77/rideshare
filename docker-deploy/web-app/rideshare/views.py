@@ -7,9 +7,9 @@ from .models import *
 from django.http import Http404
 from django.views import generic
 from django.contrib import messages
-from .forms import CreateUserForm
+from .forms import CreateUserForm, CreateDriverForm
 from django.contrib.auth import authenticate, login, logout
-
+from .models import Driver, Ride, Rider, RideUser
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404, redirect
 
@@ -65,16 +65,27 @@ def logoutUser(request):
 	return redirect('rideshare:login')
 
 @login_required(login_url='rideshare:login')
+def driverRegister(request):
+	initial_data = {'user': request.user}
+	form = CreateDriverForm()
+	
+	if request.method == 'POST':
+		form = CreateDriverForm(request.POST)
+		print('vehicle type')
+		# print(form.fields['vehicle_type'].)
+		# form.fields['user'] = request.user
+		if form.is_valid():
+			driver = form.save(commit=False)
+			driver.user = request.user
+			driver.save()
+			return redirect('rideshare:home')
+	driver_context = {'form': form}
+	return render(request, 'rideshare/driverRegister.html', driver_context)
+
+@login_required(login_url='rideshare:login')
 def home(request):
-	users = User.objects.all()
-
-
-	context = {'user_list':users}
-
+	context = {}
+	
+	context['isDriver'] = Driver.objects.filter(user=request.user).exists()
 	return render(request, 'rideshare/home.html', context)
-
-# class DetailView(generic.DetailView):
-#     model = User
-#     context_object_name = 'user'
-#     template_name = "rideshare/detail.html"
 

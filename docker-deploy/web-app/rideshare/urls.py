@@ -7,4 +7,5 @@ urlpatterns = [
     path('', views.home, name="home"),
     path('login/', views.loginPage, name="login"),
     path('logout/', views.logoutUser, name="logout"),
+    path('driverregister/', views.driverRegister, name='driverregister')
 ]
