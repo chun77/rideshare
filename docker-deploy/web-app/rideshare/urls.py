@@ -3,6 +3,8 @@ from django.urls import path
 from . import views
 app_name = "rideshare"
 urlpatterns = [
-    path("", views.IndexView.as_view(), name="index"),
-    path("<int:pk>/", views.DetailView.as_view(), name="detail"),
+    path('register/', views.registerPage, name="register"),
+    path('', views.home, name="home"),
+    path('login/', views.loginPage, name="login"),
+    path('logout/', views.logoutUser, name="logout"),
 ]

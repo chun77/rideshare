@@ -1,17 +1,22 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 # Create your models here.
 
 def get_default_user():
     return User.object.get(name='default')
 
-class User(models.Model):
-    first_name_text = models.CharField(max_length=200)
-    last_name_text = models.CharField(max_length=200)
-    password_text = models.CharField(max_length=200)
+# class User(models.Model):
+#     first_name_text = models.CharField(max_length=200)
+#     last_name_text = models.CharField(max_length=200)
+#     password_text = models.CharField(max_length=200)
 
-    def __str__(self):
-        return f'({self.first_name_text}, {self.last_name_text})'
+#     def __str__(self):
+#         return f'({self.first_name_text}, {self.last_name_text})'
+
+# class User(User):
+#     def __str__(self):
+#         return f'({self.first_name}, {self.last_name}, {self.email})'
 
 def get_default_driver():
     return Driver.object.get(name='default')
@@ -21,7 +26,7 @@ class Driver(models.Model):
     vehicle_type = models.CharField(max_length=200)
     max_passengers = models.IntegerField()
     plate_number = models.CharField(max_length=200)
-    special_info = models.TextField()
+    special_info = models.TextField(blank=True)
 
     def __str__(self):
         return f'({self.user}, {self.vehicle_type}, {self.max_passengers}, {self.plate_number}, {self.special_info})'
