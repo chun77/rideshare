@@ -50,6 +50,9 @@ class Ride(models.Model):
     end_loc = models.CharField(max_length=200)
     create_time = models.DateTimeField("time created")
     end_time = models.DateTimeField("time completed")
+    num_passengers = models.BigIntegerField()
+    max_passengers = models.IntegerField()
+    shareable = models.BooleanField(default = True)
     driver_user = models.ForeignKey(Driver, on_delete=models.CASCADE)
     request_user = models.ForeignKey(Rider, on_delete=models.CASCADE)
 
@@ -60,6 +63,7 @@ class Ride(models.Model):
 class RideUser(models.Model):
     ride_id = models.ForeignKey(Ride, on_delete=models.CASCADE)
     user_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    num_party = models.BigIntegerField()
     
     def __str__(self):
         return f'({self.user_id}, {self.ride_id})'

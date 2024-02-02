@@ -1,0 +1,10 @@
+{% block content %}
+
+<h2>Edit Driver Information</h2>
+<form method="post" novalidate>
+	{% csrf_token %}
+	{{ form.as_p }}
+	<input type="submit" value="Save" />
+</form>
+
+{% endblock content %}

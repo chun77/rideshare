@@ -12,6 +12,7 @@ from django.contrib.auth import authenticate, login, logout
 from .models import Driver, Ride, Rider, RideUser
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404, redirect
+from django.views.generic.edit import UpdateView
 
 
 # class IndexView(generic.ListView):
@@ -21,6 +22,13 @@ from django.shortcuts import render, get_object_or_404, redirect
 #     def get_queryset(self):
 #         """Return the last five published questions."""
 #         return OurUser.objects.all()
+
+# @login_required(login_url='rideshare:login')
+# class DriverUpdateView(UpdateView):
+# 	def __init__(self,model,fields,template):
+# 		model = Driver
+# 		fields = ['vehicle_type', 'max_passengers', 'plate_number', 'special_info']
+# 		template = "editDriverInfo"
 
 def registerPage(request):
 	if request.user.is_authenticated:
@@ -66,7 +74,7 @@ def logoutUser(request):
 
 @login_required(login_url='rideshare:login')
 def driverRegister(request):
-	initial_data = {'user': request.user}
+	# initial_data = {'user': request.user}
 	form = CreateDriverForm()
 	
 	if request.method == 'POST':
@@ -75,6 +83,7 @@ def driverRegister(request):
 		# print(form.fields['vehicle_type'].)
 		# form.fields['user'] = request.user
 		if form.is_valid():
+
 			driver = form.save(commit=False)
 			driver.user = request.user
 			driver.save()
@@ -83,9 +92,29 @@ def driverRegister(request):
 	return render(request, 'rideshare/driverRegister.html', driver_context)
 
 @login_required(login_url='rideshare:login')
+def editDriverInfo(request):
+	driver = get_object_or_404(Driver, user = request.user)
+	if request.method == 'GET':
+		context = {'form': CreateDriverForm(instance=driver)}
+		return render(request,'rideshare/editDriverInfo.html',context)
+	elif request.method == 'POST':
+		form = CreateDriverForm(request.POST, instance=driver)
+		if form.is_valid():
+			form.save()
+			return redirect('rideshare:home')
+		else:
+			messages.error(request, 'Please correct the following errors:')
+			return render(request,'rideshare/editDriverInfo.html',{'form':form})
+
+
+@login_required(login_url='rideshare:login')
 def home(request):
 	context = {}
 	
 	context['isDriver'] = Driver.objects.filter(user=request.user).exists()
 	return render(request, 'rideshare/home.html', context)
 
+@login_required(login_url='rideshare:login')
+def rideRequest(request):
+	context = {}
+	return render(request, 'rideshare/rideRequest.html', context)
