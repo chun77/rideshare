@@ -14,7 +14,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic.edit import UpdateView
 from datetime import datetime
-
+from django.db.models import Q
 
 # class IndexView(generic.ListView):
 #     template_name = "rideshare/index.html"
@@ -142,3 +142,10 @@ def rideRequest(request):
 			return redirect('rideshare:home')
 	context = {'form': form}
 	return render(request, 'rideshare/rideRequest.html', context)
+
+@login_required(login_url='rideshare:login')
+def viewNonComplete(request):
+	results = RideUser.objects.filter(user = request.user).select_related('ride').exclude(ride__status = "COMPLETE")
+	context = {"object_list" : results}
+	return render(request, 'rideshare/viewNonComplete.html', context)
+

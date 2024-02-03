@@ -1,0 +1,9 @@
+<!DOCTYPE html>
+<html lang="en">
+  <body>
+    {% for obj in object_list %}
+        Ride {{ forloop.counter }} : {{ obj.ride.status }}<br/>
+    {% endfor %}
+
+  </body>
+</html>

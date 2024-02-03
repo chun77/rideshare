@@ -9,5 +9,7 @@ urlpatterns = [
     path('logout/', views.logoutUser, name="logout"),
     path('driverregister/', views.driverRegister, name='driverregister'),
     path('editdriverinfo/',views.editDriverInfo, name='editdriverinfo'),
-    path('rideRequest/',views.rideRequest, name='riderequest')
+    path('rideRequest/',views.rideRequest, name='riderequest'),
+    path('viewnoncomplete/',views.viewNonComplete, name='viewnoncomplete')
+
 ]
