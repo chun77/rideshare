@@ -6,6 +6,7 @@ from django.template import loader
 from .models import *
 from django.http import Http404
 from django.views import generic
+from django import forms
 from django.contrib import messages
 from .forms import CreateUserForm, CreateDriverForm, CreateRideForm
 from django.contrib.auth import authenticate, login, logout
@@ -149,3 +150,92 @@ def viewNonComplete(request):
 	context = {"object_list" : results}
 	return render(request, 'rideshare/viewNonComplete.html', context)
 
+@login_required(login_url='rideshare:login')
+def viewRideDetails(request, ride_id):
+	ride = get_object_or_404(Ride, pk=ride_id)
+
+	ride_form = CreateRideForm(instance=ride)
+	ride_form.fields['status'] = forms.CharField(initial=ride.status)
+	ride_form.fields['arrival_time'] = forms.DateTimeField(initial=ride.arrival_time)
+	ride_form.fields['ride_owner'] = forms.CharField(initial=ride.request_user.username)
+	for field in ride_form.fields:
+		ride_form.fields[field].widget.attrs['readonly'] = True
+	ride_form.fields['shareable'].widget.attrs['disabled'] = True
+
+	context = {'ride_form': ride_form}
+	return render(request, 'rideshare/viewRideDetails.html', context)
+
+
+@login_required(login_url='rideshare:login')
+def viewDriverDetails(request, ride_id):
+	ride = get_object_or_404(Ride, pk=ride_id)
+	
+	driver = ride.driver_user
+	driver_form = CreateDriverForm(instance=driver)
+	driver_form.fields['driver_name'] = forms.CharField(initial=driver.user.username)
+	for field in driver_form.fields:
+		driver_form.fields[field].widget.attrs['readonly'] = True
+	context = {'driver_form': driver_form}
+	
+		# context[field.name] = driver[field]
+	print(driver.max_passengers)
+	return render(request, 'rideshare/viewDriverDetails.html', context)
+
+@login_required(login_url='rideshare:login')
+def searchForRide(request):
+	form = CreateRideForm()
+	# form.fields['arrival_time_latest'] = forms.DateTimeField()
+	# form.fields['arrival_time_earliest'] = forms.DateTimeField()
+	if request.method == 'POST':
+		form = CreateRideForm(request.POST)
+		# form.fields['shareable'] = True
+		if form.is_valid():
+			
+
+			ride = form.save(commit=False)
+
+			date_str = request.POST['d']  # e.g., '2024-02-03'
+			time_str = request.POST['e']  # e.g., '14:30'
+			# Combine the date and time strings into a datetime object
+			# ride.arrival_time_earliest = datetime.strptime(f'{date_str} {time_str}', '%Y-%m-%d %H:%M')
+
+			date_str2 = request.POST['f']  # e.g., '2024-02-03'
+			time_str2 = request.POST['g']  # e.g., '14:30'
+			# Combine the date and time strings into a datetime object
+			# ride.arrival_time_latest = datetime.strptime(f'{date_str} {time_str}', '%Y-%m-%d %H:%M')
+			
+    
+			ride.status = "OPEN"
+			ride.request_user = request.user
+			request.session['destination_address'] = ride.end_loc
+			request.session['early_date'] = date_str
+			request.session['early_time'] = time_str
+			request.session['late_date'] = date_str2
+			request.session['late_time'] = time_str2
+			# request.session['late'] = ride.arrival_time_latest
+			request.session['num_passenger'] = ride.num_passengers
+			request.session['special_info'] = ride.special_info
+			return redirect('rideshare:showsearchresults')
+	
+	
+	context = {'form': form}
+	return render(request, 'rideshare/searchForRide.html', context)
+
+@login_required(login_url='rideshare:login')
+def showSearchResults(request):
+	early_arrival = datetime.strptime(f"{request.session['early_date']} {request.session['early_time']}", '%Y-%m-%d %H:%M')
+	print(early_arrival)
+	late_arrival = datetime.strptime(f"{request.session['late_date']} {request.session['late_time']}", '%Y-%m-%d %H:%M')
+	result = Ride.objects.filter(Q(end_loc = request.session['destination_address']) 
+							  & Q(special_info = request.session['special_info'])
+							  & Q(arrival_time__gte = early_arrival)
+							  & Q(arrival_time__lte = late_arrival)
+							  & Q(status = 'OPEN'))
+	if request.method == 'POST':
+		# need to know which option they chose
+		choice = request.POST
+		# once we know, we can incrememt the ride by the amount of passengers
+		# can also make a new entry in the RideUser database wit
+		print(choice)
+	context = {'result': result}
+	return render(request, 'rideshare/showSearchResults.html', context)

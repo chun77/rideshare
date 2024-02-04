@@ -11,13 +11,11 @@
 <html lang="en">
   <body>
     {% block content %}
-    {% for obj in object_list %}
-        Ride {{ forloop.counter }} status: {{ obj.ride.status }}
+    {% for obj in result %}
+        Ride {{ forloop.counter }} status: {{ obj.status }}
+        <span><button type='submit' method='post' name=obj.id class=".hello-msg"  value = obj.id>Choose This Ride</a></span>
+
         
-        <span><a class=".hello-msg" href = "{% url 'rideshare:viewridedetails' obj.ride.id %}">View Ride Details</a></span>
-        {% if obj.ride.status == "CONFIRMED" %}
-        <span><a class=".hello-msg" href = "{% url 'rideshare:viewdriverdetails' obj.ride.id %}">View Driver Details</a></span>
-        {% endif %}
         <br/>
     {% endfor %}
     {% endblock content %}

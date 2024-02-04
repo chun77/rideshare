@@ -5,7 +5,7 @@
   <meta name="author" content="Sahil Kumar">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Driver Registration</title>
+  <title>Request a Ride</title>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css">
 </head>
@@ -14,7 +14,7 @@
   <div class="container">
     <div class="row justify-content-center">
       <div class="col-md-4 mt-5 bg-light rounded">
-        <h1 class="text-center font-weight-bold text-primary">Driver Registration</h1>
+        <h1 class="text-center font-weight-bold text-primary">Request a Ride</h1>
         <hr class="bg-light">
         <h5 class="text-center text-success"></h5>
         <form action="" method="POST" id="form-box" class="p-2">
@@ -39,7 +39,7 @@
             <input type="number" name="num_passengers" class="form-control" placeholder="Number Of Passengers" required>
           </div>
           <div class="form-group input-group">
-            <label for="check">shareable:</label> <input type="checkbox" name="shareable" class="form-control" required>
+            <label for="check">shareable:</label> <input type="checkbox" name="shareable" class="form-control">
           </div>
           <div class="form-group input-group">
             <textarea name="special_info" id="msg" class="form-control"  placeholder="Special Information" cols="30" rows="4"></textarea>
@@ -49,7 +49,11 @@
           </div>
         </form>
 		{{form.errors}}
-
+    <button onclick="location.href = '/rideshare/'" style=" align-items: center;  padding: 10px 20px;
+		font-size: 16px; display: block;
+		margin-top: 20px;
+		margin-left: auto;
+		margin-right: auto;">Go Back Home</button>
       </div>
     </div>
   </div>

@@ -10,6 +10,10 @@ urlpatterns = [
     path('driverregister/', views.driverRegister, name='driverregister'),
     path('editdriverinfo/',views.editDriverInfo, name='editdriverinfo'),
     path('rideRequest/',views.rideRequest, name='riderequest'),
-    path('viewnoncomplete/',views.viewNonComplete, name='viewnoncomplete')
+    path('viewnoncomplete/',views.viewNonComplete, name='viewnoncomplete'),
+    path('<int:ride_id>/viewridedetails/', views.viewRideDetails, name='viewridedetails'),
+    path('<int:ride_id>/viewdriverdetails/', views.viewDriverDetails, name='viewdriverdetails'),
+    path('searchforride/', views.searchForRide, name='searchforride'),
+    path('showsearchresults/', views.showSearchResults, name='showsearchresults'),
 
 ]
