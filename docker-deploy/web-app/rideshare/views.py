@@ -213,7 +213,7 @@ def searchForRide(request):
 			request.session['late_date'] = date_str2
 			request.session['late_time'] = time_str2
 			# request.session['late'] = ride.arrival_time_latest
-			request.session['num_passenger'] = ride.num_passengers
+			request.session['num_passengers'] = ride.num_passengers
 			request.session['special_info'] = ride.special_info
 			return redirect('rideshare:showsearchresults')
 	
@@ -230,12 +230,20 @@ def showSearchResults(request):
 							  & Q(special_info = request.session['special_info'])
 							  & Q(arrival_time__gte = early_arrival)
 							  & Q(arrival_time__lte = late_arrival)
-							  & Q(status = 'OPEN'))
+							  & Q(status = 'OPEN')).exclude(request_user = request.user)
 	if request.method == 'POST':
 		# need to know which option they chose
-		choice = request.POST
+		ride_id = request.POST.get('ride_id')
 		# once we know, we can incrememt the ride by the amount of passengers
+		num_party = request.session['num_passengers']
+		ride = Ride.objects.get(id = ride_id)
+		ride.num_passengers += num_party
+		ride.save()
+		
 		# can also make a new entry in the RideUser database wit
-		print(choice)
+		rideuser = RideUser.objects.create(ride=ride, user=request.user,num_party = num_party)
+		rideuser.save()
+		return redirect('rideshare:home')
+
 	context = {'result': result}
 	return render(request, 'rideshare/showSearchResults.html', context)
