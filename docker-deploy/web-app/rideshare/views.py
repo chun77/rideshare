@@ -274,11 +274,12 @@ def editRideDetails(request, ride_id):
 	ride_form.fields["num_party"] = forms.IntegerField(initial=rideuser.num_party)
 	ride_form.fields['ride_owner'] = forms.CharField(initial=ride_obj.request_user.username)
 
-	if not context['is_owner'] or context['shared']:
-		ride_form.fields['shareable'].widget.attrs['disabled'] = True
-		for field in ride_form.fields:
-			if field != 'num_party':
-				ride_form.fields[field].widget.attrs['readonly'] = True
+	# ride_form.fields['ride_owner'].widget.attrs['readonly'] = True
+	# if not context['is_owner'] or context['shared']:
+	# 	ride_form.fields['shareable'].widget.attrs['disabled'] = True
+	# 	for field in ride_form.fields:
+	# 		if field != 'num_party':
+	# 			ride_form.fields[field].widget.attrs['readonly'] = True
 				
 	# else:
 	# 	if context['shared']:
@@ -291,7 +292,8 @@ def editRideDetails(request, ride_id):
 	if request.method == "GET":
 		return render(request, 'rideshare/editRideDetails.html', context)
 	elif request.method == "POST":
-		if request.POST.get('leave') == True:
+		if request.POST.get('leave') == "Leave Ride":
+			print('here')
 			if context['is_owner']:
 				ride_obj.delete()
 			else:
@@ -301,14 +303,26 @@ def editRideDetails(request, ride_id):
 		else:
 			# check time
 			# if time in range only when owner and shared
-			num_party = request.POST.get('num_party')
+			if request.POST.get('num_party') == '':
+				num_party = rideuser.num_party
+			else:
+				num_party = int(request.POST.get('num_party'))
 			if context['is_owner'] and not context['shared']:
-				ride_obj.arrival_time = request.POST.get('arrival_time')
-				ride_obj.shareable = request.POST.get('shareable')
-				ride_obj.special_info = request.POST.get('special_info')
-				ride_obj.end_loc = request.POST.get('end_loc')
+				print(request.POST.get('special_info'))
+				if request.POST.get('arrival_time') != None:
+					ride_obj.arrival_time = request.POST.get('arrival_time')
+				if request.POST.get('shareable') != None:
+					if request.POST.get('shareable') == 'on':
+						ride_obj.shareable = True
+					else:
+						ride_obj.shareable = False
+				if request.POST.get('special_info') != '':
+					ride_obj.special_info = request.POST.get('special_info')
+				if request.POST.get('end_loc') != '':
+					ride_obj.end_loc = request.POST.get('end_loc')
 				ride_obj.num_passengers = num_party
 			else:
+				print(num_party)
 				ride_obj.num_passengers = ride_obj.num_passengers - rideuser.num_party + num_party
 			ride_obj.save()
 

@@ -20,48 +20,69 @@
         <form action="" method="POST" id="form-box" class="p-2">
 			{% csrf_token %}
           <div class="form-group input-group">
-            <!-- <div class="input-group-prepend">
-              <span class="input-group-text"><i class="fas fa-user"></i></span>
-            </div> -->
-            <input type="text" name="end_loc" class="form-control" placeholder=ride_form.fields["end_loc"] required>
-          </div>
-          <div class="form-group input-group" >
-            <!-- <div class="input-group-prepend">
-              <span class="input-group-text"><i class="fas fa-envelope"></i></span>
-            </div> -->
-            <p class="datetime" name = "arrival_time_earliest">
-            Earliest Arrival Time: <input type="date" name="d" required id="id_pub_date_0">
-                <br>
-            <input type="time" name="e" required id="id_pub_date_1">
-            </p>
-          </div>
-          <div class="form-group input-group" >
-            <!-- <div class="input-group-prepend">
-              <span class="input-group-text"><i class="fas fa-envelope"></i></span>
-            </div> -->
-            <p class="datetime" name = "arrival_time_latest">
-            Latest Arrival Time: <input type="date" name="f" required id="id_pub_date_2">
-                <br>
-            <input type="time" name="g" required id="id_pub_date_3">
-            </p>
+            {% if is_owner == False or shared == True %}
+            Destination Address: <input type="text" name="end_loc" class="form-control" placeholder='{{ ride_form.end_loc.value }}' readonly>
+            {% else %}
+            Destination Address: <input type="text" name="end_loc" class="form-control" placeholder='{{ ride_form.end_loc.value }}'>
+            {% endif %}
           </div>
           <div class="form-group input-group">
-            <input type="number" name="num_passengers" class="form-control" placeholder="Number Of Passengers" required>
+            {% if is_owner == False or shared == True %}
+            Arrival Time: {{ ride_form.arrival_time }}
+            {% else %}
+            <p class="datetime" name="arrival_time">
+              Arrival Time: {{ ride_form.arrival_time }} <input type="date" name="d"  id="id_pub_date_0" value="{{ ride_form.arrival_time.value }}">
+              <br>
+              <input type="time" name="e"  id="id_pub_date_1" value="{{ ride_form.arrival_time.value }}">
+              </p>
+            {% endif %}
           </div>
           
           <div class="form-group input-group">
-            <textarea name="special_info" id="msg" class="form-control"  placeholder="Special Information" cols="30" rows="4"></textarea>
+            Number of Passengers in Party: <input type="number" name="num_party" class="form-control" placeholder='{{ ride_form.num_party.value }}'>
+          </div>
+          
+          <div class="form-group input-group">
+            {% if is_owner == False or shared == True %}
+            {% if ride_form.shareable.value == True %}
+            <label for="check">Shareable:</label> <input type="checkbox" name="shareable" class="form-control" checked disabled readonly>
+            {% else %}
+            <label for="check">Shareable:</label> <input type="checkbox" name="shareable" class="form-control"  disabled readonly>
+            {% endif %}
+            {% else %}
+            {% if ride_form.shareable.value == True %}
+            <label for="check">Shareable:</label> <input type="checkbox" name="shareable" class="form-control" checked >
+            {% else %}
+            <label for="check">Shareable:</label> <input type="checkbox" name="shareable" class="form-control" >
+            {% endif %}
+            {% endif %}
+          </div>
+
+          <div class="form-group input-group">
+            {% if is_owner == False or shared == True %}
+            Special Info: <textarea name="special_info" id="msg" class="form-control"  placeholder='{{ ride_form.special_info.value }}' cols="30" rows="4" readonly></textarea>
+            {% else %}
+            Special Info: <textarea name="special_info" id="msg" class="form-control"  placeholder='{{ ride_form.special_info.value }}' cols="30" rows="4"></textarea>
+            {% endif %}
+          </div>
+          <div class="form-group input-group">
+            Ride Owner: <input type="text" name="ride_owner" class="form-control"  placeholder='{{ ride_form.ride_owner.value }}' readonly></input>
           </div>
           <div class="form-group">
-            <input type="submit" name="submit" id="submit" class="btn btn-primary btn-block" value="Search">
+            <input type="submit" name="submit" id="submit" class="btn btn-primary btn-block" value="Confirm Edits">
           </div>
+          {% if is_owner == False or shared == False %}
+          <div class="form-group">
+            <input type="submit" name="leave" id="leave" class="btn btn-primary btn-block" value="Leave Ride">
+          </div>
+          {% endif %}
         </form>
 		{{form.errors}}
-    <button onclick="location.href = '/rideshare/'" style=" align-items: center;  padding: 10px 20px;
+    <button onclick="location.href = '/rideshare/viewnoncomplete'" style=" align-items: center;  padding: 10px 20px;
 		font-size: 16px; display: block;
 		margin-top: 20px;
 		margin-left: auto;
-		margin-right: auto;">Go Back Home</button>
+		margin-right: auto;">View Non Complete Rides</button>
       </div>
     </div>
   </div>

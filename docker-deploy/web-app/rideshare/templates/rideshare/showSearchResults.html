@@ -14,8 +14,8 @@
     {% for ride in result %}
       <form method="post">
           {% csrf_token %}
-          <input type="hidden" name="ride_id" value="{{ ride.id }}">
-          <input type="submit" value="Join Ride {{ ride.id }} {{ride.status}}">
+          <input type="hidden" name="ride_id" value="{{ ride.ride.id }}">
+          <input type="submit" value="Join Ride {{ ride.ride.id }} {{ride.status}}">
       </form>
         <br/>
     {% endfor %}
