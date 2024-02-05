@@ -330,3 +330,31 @@ def editRideDetails(request, ride_id):
 			rideuser.save()
 			
 		return redirect("rideshare:home")
+
+@login_required(login_url='rideshare:login')
+def driverPage(request):
+	context = {}
+	return render(request, 'rideshare/driverPage.html', context)
+
+@login_required(login_url='rideshare:login')
+def showRidesForDriver(request):
+	driver = get_object_or_404(Driver, user=request.user)
+	if request.method == 'GET':
+		rides = Ride.objects.filter(
+            Q(status='OPEN') & 
+            Q(num_passengers__lte=driver.max_passengers)  
+        ).exclude(driver_user = driver)  # Exclude rides already claimed by this driver
+		return render(request, 'rideshare/showRidesForDriver.html', {'rides': rides})
+	elif request.method == 'POST':
+		ride_id = request.POST.get('ride_id')
+		ride = Ride.objects.get(id = ride_id)
+		ride.status = 'CONFIRMED'  
+		ride.driver_user = driver  
+		ride.save()
+		return redirect('rideshare:driverpage') 
+	return redirect('rideshare:showridesfordriver')
+	
+
+    
+
+    

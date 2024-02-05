@@ -8,6 +8,7 @@ urlpatterns = [
     path('login/', views.loginPage, name="login"),
     path('logout/', views.logoutUser, name="logout"),
     path('driverregister/', views.driverRegister, name='driverregister'),
+    path('driverpage/',views.driverPage, name='driverpage'),
     path('editdriverinfo/',views.editDriverInfo, name='editdriverinfo'),
     path('rideRequest/',views.rideRequest, name='riderequest'),
     path('viewnoncomplete/',views.viewNonComplete, name='viewnoncomplete'),
@@ -15,6 +16,7 @@ urlpatterns = [
     path('<int:ride_id>/viewdriverdetails/', views.viewDriverDetails, name='viewdriverdetails'),
     path('searchforride/', views.searchForRide, name='searchforride'),
     path('showsearchresults/', views.showSearchResults, name='showsearchresults'),
-    path('<int:ride_id>/editridedetails/', views.editRideDetails, name='editridedetails')
+    path('<int:ride_id>/editridedetails/', views.editRideDetails, name='editridedetails'),
+    path('showridesfordriver/',views.showRidesForDriver, name='showridesfordriver'),
 
 ]
