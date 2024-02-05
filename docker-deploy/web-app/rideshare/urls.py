@@ -15,5 +15,6 @@ urlpatterns = [
     path('<int:ride_id>/viewdriverdetails/', views.viewDriverDetails, name='viewdriverdetails'),
     path('searchforride/', views.searchForRide, name='searchforride'),
     path('showsearchresults/', views.showSearchResults, name='showsearchresults'),
+    path('<int:ride_id>/editridedetails/', views.editRideDetails, name='editridedetails')
 
 ]

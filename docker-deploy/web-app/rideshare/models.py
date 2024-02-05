@@ -31,8 +31,6 @@ class Driver(models.Model):
     def __str__(self):
         return f'({self.user}, {self.vehicle_type}, {self.max_passengers}, {self.plate_number}, {self.special_info})'
 
-def get_default_rider():
-    return Rider.object.get(name='default')
 
 
 # class Rider(models.Model):
@@ -51,7 +49,7 @@ class Ride(models.Model):
     arrival_time = models.DateTimeField("arrival time",null=True)
     num_passengers = models.BigIntegerField(null=True)
     shareable = models.BooleanField(default = True)
-    driver_user = models.ForeignKey(Driver, on_delete=models.CASCADE,null=True)
+    driver_user = models.ForeignKey(Driver, on_delete=models.CASCADE,null=True,blank = True)
     request_user = models.ForeignKey(User, on_delete=models.CASCADE)
     special_info = models.TextField(blank=True)
 
