@@ -353,8 +353,55 @@ def showRidesForDriver(request):
 		ride.save()
 		return redirect('rideshare:driverpage') 
 	return redirect('rideshare:showridesfordriver')
+
+@login_required(login_url='rideshare:login')
+def viewConfirmedRides(request):
+	driver = get_object_or_404(Driver, user=request.user)
+	results = Ride.objects.filter(driver_user = driver).exclude(status = 'COMPLETE')
+	context = {}
+	context['object_list'] = results
+
+	return render(request, 'rideshare/viewConfirmedRides.html', context)
 	
 
-    
+@login_required(login_url='rideshare:login')
+def viewRideDetailsDriver(request, ride_id):
+	ride = get_object_or_404(Ride, pk=ride_id)
+
+	ride_form = CreateRideForm(instance=ride)
+	ride_form.fields['status'] = forms.CharField(initial=ride.status)
+	ride_form.fields['arrival_time'] = forms.DateTimeField(initial=ride.arrival_time)
+	ride_form.fields['ride_owner'] = forms.CharField(initial=ride.request_user.username)
+	for field in ride_form.fields:
+		if field != 'status':
+			ride_form.fields[field].widget.attrs['readonly'] = True
+	ride_form.fields['shareable'].widget.attrs['disabled'] = True
+
+	context = {'ride_form': ride_form}
+	return render(request, 'rideshare/viewRideDetailsDriver.html', context)
+
+	# change to GET & POST TBD here
+	# or another view function
+
+	# if request.method == 'GET':
+	# 	ride_form = CreateRideForm(instance=ride)
+	# 	ride_form.fields['status'] = forms.CharField(initial=ride.status)
+	# 	ride_form.fields['arrival_time'] = forms.DateTimeField(initial=ride.arrival_time)
+	# 	ride_form.fields['ride_owner'] = forms.CharField(initial=ride.request_user.username)
+	# 	for field in ride_form.fields:
+	# 		if field != 'status':
+	# 			ride_form.fields[field].widget.attrs['readonly'] = True
+	# 	ride_form.fields['shareable'].widget.attrs['disabled'] = True
+
+	# 	context = {'ride_form': ride_form}
+	# 	return render(request, 'rideshare/viewRideDetailsDriver.html', context)
+	# elif request.method == 'POST':
+	# 	ride_id = request.POST.get('ride_id')
+	# 	ride = Ride.objects.get(id = ride_id)
+	# 	ride.status = 'CONFIRMED'  
+	# 	ride.driver_user = driver  
+	# 	ride.save()
+	# 	return redirect('rideshare:driverpage') 
+	# return redirect('rideshare:showridesfordriver')
 
     
