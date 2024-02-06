@@ -25,9 +25,14 @@ SECRET_KEY = 'django-insecure-1bmayny2iodm9k+tp+1)l59d1j-i$ej*)33-*wkp=#7+v@hci6
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['vcm-38544.vm.duke.edu','127.0.0.1','vcm-38363.vm.duke.edu']
+ALLOWED_HOSTS = ['web', 'localhost', 'vcm-38544.vm.duke.edu','127.0.0.1','vcm-38363.vm.duke.edu']
 
-
+CSRF_TRUSTED_ORIGINS = [
+    'http://*.vcm-38544.vm.duke.edu:8000',
+    'http://*.127.0.0.1:8000',
+    'http://*.vcm-38363.vm.duke.edu:8000',
+    'http://localhost:8000',
+]
 # Application definition
 
 INSTALLED_APPS = [
@@ -84,6 +89,17 @@ DATABASES = {
         'PORT': '5432',
     }
 }
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'postgres',
+#         'USER': 'postgres',
+#         'PASSWORD': 'postgres',
+#         'HOST': 'db',
+#         'PORT': 5432,
+#     }
+# }
 
 
 # Password validation

@@ -15,7 +15,7 @@
       <form method="post">
           {% csrf_token %}
           <input type="hidden" name="ride_id" value="{{ ride.ride.id }}">
-          <input type="submit" value="Join Ride {{ ride.ride.id }} {{ride.status}}">
+          <input type="submit" value="Join Ride {{ ride.ride.id }}">
       </form>
         <br/>
     {% endfor %}

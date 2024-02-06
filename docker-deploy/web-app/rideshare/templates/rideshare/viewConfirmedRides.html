@@ -13,9 +13,12 @@
     {% block content %}
     {% for obj in object_list %}
         Ride {{ forloop.counter }} Destination: {{ obj.end_loc }} Arrival Time: {{ obj.arrival_time }}
-
         <span><a class=".hello-msg" href = "{% url 'rideshare:viewridedetailsdriver' obj.id %}">View Ride Details</a></span>
-        
+        <form method="post">
+          {% csrf_token %}
+          <input type="hidden" name="ride_id" value="{{ obj.id }}">
+          <input type="submit" value="Mark as Complete">
+      </form>
         <br/>
     {% endfor %}
     {% endblock content %}

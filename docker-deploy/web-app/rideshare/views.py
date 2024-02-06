@@ -15,6 +15,8 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic.edit import UpdateView
 from datetime import datetime
+from .gmail import *
+
 from django.db.models import Q
 
 # class IndexView(generic.ListView):
@@ -95,6 +97,9 @@ def driverRegister(request):
 
 @login_required(login_url='rideshare:login')
 def editDriverInfo(request):
+	if not Driver.objects.filter(user = request.user).exists():
+		return redirect('rideshare:home')
+	
 	driver = get_object_or_404(Driver, user = request.user)
 	if request.method == 'GET':
 		context = {'form': CreateDriverForm(instance=driver)}
@@ -234,7 +239,8 @@ def showSearchResults(request):
 							  & Q(ride__arrival_time__gte = early_arrival)
 							  & Q(ride__arrival_time__lte = late_arrival)
 							  & Q(ride__shareable = True)
-							  & Q(ride__status = 'OPEN'))
+							  & Q(ride__status = 'OPEN')).distinct('ride')
+	# print(result)
 	if request.method == 'POST':
 		# need to know which option they chose
 		ride_id = request.POST.get('ride_id')
@@ -333,39 +339,64 @@ def editRideDetails(request, ride_id):
 
 @login_required(login_url='rideshare:login')
 def driverPage(request):
+	if not Driver.objects.filter(user = request.user).exists():
+		return redirect('rideshare:home')
 	context = {}
 	return render(request, 'rideshare/driverPage.html', context)
 
 @login_required(login_url='rideshare:login')
 def showRidesForDriver(request):
+	if not Driver.objects.filter(user = request.user).exists():
+		return redirect('rideshare:home')
 	driver = get_object_or_404(Driver, user=request.user)
 	if request.method == 'GET':
+		# TODO: we need to check to see if this driver is a
 		rides = Ride.objects.filter(
             Q(status='OPEN') & 
-            Q(num_passengers__lte=driver.max_passengers)  
+            Q(num_passengers__lte=driver.max_passengers) &
+			Q(special_info=driver.special_info)
         ).exclude(driver_user = driver)  # Exclude rides already claimed by this driver
 		return render(request, 'rideshare/showRidesForDriver.html', {'rides': rides})
 	elif request.method == 'POST':
 		ride_id = request.POST.get('ride_id')
 		ride = Ride.objects.get(id = ride_id)
 		ride.status = 'CONFIRMED'  
-		ride.driver_user = driver  
+		ride.driver_user = driver
 		ride.save()
+		service = gmail_authenticate()
+		# for loop here
+		users = RideUser.objects.filter(ride = ride)
+		for user in users:
+			send_message(service, 'mac95618@gmail.com', 
+			   user.user.email, 
+			   'A Driver has Confirmed Your Ride',
+			   '<h1>Hello, a driver has confirmed your ride. To see their details please click on View Non Complete Rides on the home screen, then click view driver details on any confirmed rides.</h1>')
 		return redirect('rideshare:driverpage') 
-	return redirect('rideshare:showridesfordriver')
 
 @login_required(login_url='rideshare:login')
 def viewConfirmedRides(request):
+	if not Driver.objects.filter(user = request.user).exists():
+		return redirect('rideshare:home')
 	driver = get_object_or_404(Driver, user=request.user)
+	print(driver)
+	print('hi')
 	results = Ride.objects.filter(driver_user = driver).exclude(status = 'COMPLETE')
 	context = {}
 	context['object_list'] = results
+	if request.method == 'POST':
+		ride_id = request.POST.get('ride_id')
+		ride = Ride.objects.get(id = ride_id)
+		ride.status = 'COMPLETE'
+		ride.save()
+		return redirect('rideshare:driverpage')
 
 	return render(request, 'rideshare/viewConfirmedRides.html', context)
 	
 
 @login_required(login_url='rideshare:login')
 def viewRideDetailsDriver(request, ride_id):
+	if not Driver.objects.filter(user = request.user).exists():
+		return redirect('rideshare:home')
 	ride = get_object_or_404(Ride, pk=ride_id)
 
 	ride_form = CreateRideForm(instance=ride)
@@ -373,8 +404,7 @@ def viewRideDetailsDriver(request, ride_id):
 	ride_form.fields['arrival_time'] = forms.DateTimeField(initial=ride.arrival_time)
 	ride_form.fields['ride_owner'] = forms.CharField(initial=ride.request_user.username)
 	for field in ride_form.fields:
-		if field != 'status':
-			ride_form.fields[field].widget.attrs['readonly'] = True
+		ride_form.fields[field].widget.attrs['readonly'] = True
 	ride_form.fields['shareable'].widget.attrs['disabled'] = True
 
 	context = {'ride_form': ride_form}

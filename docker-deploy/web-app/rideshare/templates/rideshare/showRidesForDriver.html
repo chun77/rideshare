@@ -15,7 +15,7 @@
       <form method="post">
           {% csrf_token %}
           <input type="hidden" name="ride_id" value="{{ ride.id }}">
-          <input type="submit" value="Pick Ride {{ ride.id }} {{ride.status}} destination:{{ride.end_loc}} num_passengers:{{ride.num_passengers}}">
+          <input type="submit" value="Confirm Ride {{ ride.id }} destination: {{ride.end_loc}} arrival_time: {{ride.arrival_time}} num_passengers: {{ride.num_passengers}}">
       </form>
         <br/>
     {% endfor %}
