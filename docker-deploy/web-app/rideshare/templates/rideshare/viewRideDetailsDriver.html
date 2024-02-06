@@ -3,6 +3,14 @@
 
     <h2>View Ride Information</h2>
     {{ ride_form.as_p }}
+	owner's num_party : {{owner_user.num_party}}
+	<br>
+	<br>
+	{% for su in share_user%}
+		Ride Sharer {{forloop.counter}} : {{su.user.username}}    num_party : {{su.num_party}}
+		<br>
+		<br>
+	{% endfor %}
 
 {% endblock content %}
 
