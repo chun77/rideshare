@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+{% load static %}
+
+<style>
+  .hello-msg{
+    font-size: 18px;
+    color: #fff;
+    margin-right: 20px;
+  }
+</style>
+<html lang="en">
+  <body>
+    {% block content %}
+    {% for ride in result %}
+      <form method="post">
+          {% csrf_token %}
+          <input type="hidden" name="ride_id" value="{{ ride.ride.id }}">
+          <input type="submit" value="Join Ride {{ ride.ride.id }}">
+      </form>
+        <br/>
+    {% endfor %}
+    {% endblock content %}
+    <button onclick="location.href = '/rideshare/'" style=" align-items: center;  padding: 10px 20px;
+		font-size: 16px; display: block;
+		margin-top: 20px;
+		margin-left: auto;
+		margin-right: auto;">Go Back Home</button>
+  </body>
+</html>

@@ -24,42 +24,47 @@ def get_default_driver():
 class Driver(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     vehicle_type = models.CharField(max_length=200)
-    max_passengers = models.IntegerField()
+    max_passengers = models.IntegerField(null=True)
     plate_number = models.CharField(max_length=200)
     special_info = models.TextField(blank=True)
 
     def __str__(self):
         return f'({self.user}, {self.vehicle_type}, {self.max_passengers}, {self.plate_number}, {self.special_info})'
 
-def get_default_rider():
-    return Rider.object.get(name='default')
 
-class Rider(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+# class Rider(models.Model):
+#     user = models.ForeignKey(User, on_delete=models.CASCADE)
     
-    def __str__(self):
-        return f'{self.user}'
+#     def __str__(self):
+#         return f'{self.user}'
 
 
 class Ride(models.Model):
-    ride_id = models.BigIntegerField()
+    # ride_id = models.BigAutoField()
     # this should be either complete, confirmed, open
     status = models.CharField(max_length=200)
     # need a start location and end location
-    start_loc = models.CharField(max_length=200)
     end_loc = models.CharField(max_length=200)
-    create_time = models.DateTimeField("time created")
-    end_time = models.DateTimeField("time completed")
-    driver_user = models.ForeignKey(Driver, on_delete=models.CASCADE)
-    request_user = models.ForeignKey(Rider, on_delete=models.CASCADE)
+    arrival_time = models.DateTimeField("arrival time",null=True)
+    num_passengers = models.BigIntegerField(null=True)
+    shareable = models.BooleanField(default = True)
+    driver_user = models.ForeignKey(Driver, on_delete=models.CASCADE,null=True,blank = True)
+    request_user = models.ForeignKey(User, on_delete=models.CASCADE)
+    special_info = models.TextField(blank=True)
 
-    def __str__(self):
-        return f'({self.status}, {self.driver_user}, {self.request_user}, {self.ride_id})'
+    # def __str__(self):
+    #     return f'({self.status}, {self.driver_user}, {self.request_user}, {self.ride_id})'
 
 
+# share form? -> session save ? cache
+# join -> save to database
+
+# only sharer? -> nope
 class RideUser(models.Model):
-    ride_id = models.ForeignKey(Ride, on_delete=models.CASCADE)
-    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    ride = models.ForeignKey(Ride, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    num_party = models.BigIntegerField(null=True)
     
-    def __str__(self):
-        return f'({self.user_id}, {self.ride_id})'
+    # def __str__(self):
+    #     return f'({self.user}, {self.ride})'

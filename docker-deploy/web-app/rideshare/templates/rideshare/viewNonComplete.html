@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+{% load static %}
+
+<style>
+  .hello-msg{
+    font-size: 18px;
+    color: #fff;
+    margin-right: 20px;
+  }
+</style>
+<html lang="en">
+  <body>
+    {% block content %}
+    {% for obj in object_list %}
+        Ride {{ forloop.counter }} status: {{ obj.ride.status }} 
+
+        {% if obj.ride.status == "OPEN" %}
+        <span><a class=".hello-msg" href = "{% url 'rideshare:editridedetails' obj.ride.id %}">Edit Ride Details</a></span>
+        {% endif %}
+        <span><a class=".hello-msg" href = "{% url 'rideshare:viewridedetails' obj.ride.id %}">View Ride Details</a></span>
+        {% if obj.ride.status == "CONFIRMED" %}
+        <span><a class=".hello-msg" href = "{% url 'rideshare:viewdriverdetails' obj.ride.id %}">View Driver Details</a></span>
+        {% endif %}
+        
+        <br/>
+    {% endfor %}
+    {% endblock content %}
+    <button onclick="location.href = '/rideshare/'" style=" align-items: center;  padding: 10px 20px;
+		font-size: 16px; display: block;
+		margin-top: 20px;
+		margin-left: auto;
+		margin-right: auto;">Go Back Home</button>
+  </body>
+</html>

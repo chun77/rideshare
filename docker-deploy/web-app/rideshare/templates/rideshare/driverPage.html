@@ -10,24 +10,28 @@
 
 </head>
 <body>
-	{%  include 'rideshare/navbar.html' %}
 	<div class="container-fluid">
 	{% block content %}
-		<button onclick="location.href = '/rideshare/rideRequest'" style=" align-items: center;  padding: 10px 20px;
+		<button onclick="location.href = '/rideshare/editdriverinfo'" style=" align-items: center;  padding: 10px 20px;
 		font-size: 16px; display: block;
 		margin-top: 20px;
 		margin-left: auto;
-		margin-right: auto;">Request New Ride</button>
-		<button onclick="location.href = '/rideshare/viewnoncomplete'" style=" align-items: center;  padding: 10px 20px;
+		margin-right: auto;">Edit Driver Info</button>
+        <button onclick="location.href = '/rideshare/showridesfordriver'" style=" align-items: center;  padding: 10px 20px;
 		font-size: 16px; display: block;
 		margin-top: 20px;
 		margin-left: auto;
-		margin-right: auto;">View Non-complete Rides</button>
-		<button onclick="location.href = '/rideshare/searchforride'" style=" align-items: center;  padding: 10px 20px;
+		margin-right: auto;">Show Open Rides</button>
+		<button onclick="location.href = '/rideshare/viewconfirmedrides'" style=" align-items: center;  padding: 10px 20px;
 		font-size: 16px; display: block;
 		margin-top: 20px;
 		margin-left: auto;
-		margin-right: auto;">Search For a Ride</button>
+		margin-right: auto;">View Confrimed Rides</button>
+		<button onclick="location.href = '/rideshare/'" style=" align-items: center;  padding: 10px 20px;
+		font-size: 16px; display: block;
+		margin-top: 20px;
+		margin-left: auto;
+		margin-right: auto;">Go Back Home</button>
 	{% endblock %}
     </div>
 

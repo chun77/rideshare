@@ -2,7 +2,7 @@ from django.forms import ModelForm
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django import forms
-from .models import Driver
+from .models import Driver,Ride
 
 class CreateDriverForm(ModelForm):
 	# def __init__(self, *args, **kwargs):
@@ -17,3 +17,8 @@ class CreateUserForm(UserCreationForm):
 	class Meta:
 		model = User
 		fields = ['username', 'email', 'password1', 'password2']
+
+class CreateRideForm(ModelForm):
+	class Meta:
+		model = Ride
+		fields = ['end_loc','num_passengers','shareable','special_info']

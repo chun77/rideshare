@@ -19,6 +19,5 @@ from django.urls import include, path
 
 urlpatterns = [
     path('rideshare/', include('rideshare.urls')),
-    path('__debug__/', include('debug_toolbar.urls')),
     path('admin/', admin.site.urls)
 ]
