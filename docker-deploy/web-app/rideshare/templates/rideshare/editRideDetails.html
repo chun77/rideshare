@@ -65,9 +65,15 @@
             Special Info: <textarea name="special_info" id="msg" class="form-control"  placeholder='{{ ride_form.special_info.value }}' cols="30" rows="4"></textarea>
             {% endif %}
           </div>
+          {% if is_owner == True and shared == False %}
+          <label>Clear special info: </label><input type="checkbox" name="clear" class="form-control">
+          {% endif %}
           <div class="form-group input-group">
             Ride Owner: <input type="text" name="ride_owner" class="form-control"  placeholder='{{ ride_form.ride_owner.value }}' readonly></input>
           </div>
+          {% for message in messages %}
+        <p id="messages"> {{ message }}</p>
+      {% endfor %}
           <div class="form-group">
             <input type="submit" name="submit" id="submit" class="btn btn-primary btn-block" value="Confirm Edits">
           </div>

@@ -78,12 +78,13 @@ def logoutUser(request):
 
 @login_required(login_url='rideshare:login')
 def driverRegister(request):
+	if Driver.objects.filter(user = request.user).exists():
+		return redirect('rideshare:home')
 	# initial_data = {'user': request.user}
 	form = CreateDriverForm()
 	
 	if request.method == 'POST':
 		form = CreateDriverForm(request.POST)
-		print('vehicle type')
 		# print(form.fields['vehicle_type'].)
 		# form.fields['user'] = request.user
 		if form.is_valid():
@@ -101,17 +102,29 @@ def editDriverInfo(request):
 		return redirect('rideshare:home')
 	
 	driver = get_object_or_404(Driver, user = request.user)
+	# ride_form.fields[field].widget.attrs['readonly'] = True
+	context = {}
+	driver_form = CreateDriverForm(instance=driver)
+
+	context = {'form': driver_form}
 	if request.method == 'GET':
-		context = {'form': CreateDriverForm(instance=driver)}
 		return render(request,'rideshare/editDriverInfo.html',context)
 	elif request.method == 'POST':
-		form = CreateDriverForm(request.POST, instance=driver)
-		if form.is_valid():
-			form.save()
-			return redirect('rideshare:home')
+		if request.POST.get('resign') == 'Resign as Driver':
+			if Ride.objects.filter(driver_user = driver).exclude(status='COMPLETE').exists():
+				messages.info(request, 'You must not be in any non complete rides to resign.')
+				return render(request, 'rideshare/editDriverInfo.html', context)
+			else:
+				driver.delete()
+				return redirect('rideshare:home')
+		driver_form = CreateDriverForm(request.POST, instance=driver)
+		if driver_form.is_valid() and driver_form.cleaned_data['max_passengers'] > 0:
+			driver_form.save()
+			return redirect('rideshare:driverpage')
 		else:
-			messages.error(request, 'Please correct the following errors:')
-			return render(request,'rideshare/editDriverInfo.html',{'form':form})
+			messages.info(request, 'Please check your fields')
+		
+	return render(request,'rideshare/editDriverInfo.html',context)
 
 
 @login_required(login_url='rideshare:login')
@@ -123,11 +136,13 @@ def home(request):
 
 @login_required(login_url='rideshare:login')
 def rideRequest(request):
+	if not request.META.get('HTTP_REFERER'):
+		return redirect('rideshare:home')
 	form = CreateRideForm()
-	
+	context = {'form': form}
 	if request.method == 'POST':
 		form = CreateRideForm(request.POST)
-		if form.is_valid():
+		if form.is_valid() and form.cleaned_data['num_passengers'] > 0:
 			
 
 			ride = form.save(commit=False)
@@ -146,11 +161,15 @@ def rideRequest(request):
 								num_party = ride.num_passengers)
 			rideuser.save()
 			return redirect('rideshare:home')
-	context = {'form': form}
+		else:
+			messages.info(request, 'Please correct your forms')
+	
 	return render(request, 'rideshare/rideRequest.html', context)
 
 @login_required(login_url='rideshare:login')
 def viewNonComplete(request):
+	if not request.META.get('HTTP_REFERER'):
+		return redirect('rideshare:home')
 	results = RideUser.objects.filter(user = request.user).select_related('ride').exclude(ride__status = "COMPLETE")
 	context = {}
 	context['object_list'] = results
@@ -160,6 +179,8 @@ def viewNonComplete(request):
 
 @login_required(login_url='rideshare:login')
 def viewRideDetails(request, ride_id):
+	if not request.META.get('HTTP_REFERER'):
+		return redirect('rideshare:home')
 	ride = get_object_or_404(Ride, pk=ride_id)
 
 	ride_form = CreateRideForm(instance=ride)
@@ -176,6 +197,8 @@ def viewRideDetails(request, ride_id):
 
 @login_required(login_url='rideshare:login')
 def viewDriverDetails(request, ride_id):
+	if not request.META.get('HTTP_REFERER'):
+		return redirect('rideshare:home')
 	ride = get_object_or_404(Ride, pk=ride_id)
 	
 	driver = ride.driver_user
@@ -186,11 +209,12 @@ def viewDriverDetails(request, ride_id):
 	context = {'driver_form': driver_form}
 	
 		# context[field.name] = driver[field]
-	print(driver.max_passengers)
 	return render(request, 'rideshare/viewDriverDetails.html', context)
 
 @login_required(login_url='rideshare:login')
 def searchForRide(request):
+	if not request.META.get('HTTP_REFERER'):
+		return redirect('rideshare:home')
 	form = CreateRideForm()
 	# form.fields['arrival_time_latest'] = forms.DateTimeField()
 	# form.fields['arrival_time_earliest'] = forms.DateTimeField()
@@ -230,9 +254,11 @@ def searchForRide(request):
 
 @login_required(login_url='rideshare:login')
 def showSearchResults(request):
+	if not request.META.get('HTTP_REFERER'):
+		return redirect('rideshare:home')
 	early_arrival = datetime.strptime(f"{request.session['early_date']} {request.session['early_time']}", '%Y-%m-%d %H:%M')
-	print(early_arrival)
 	late_arrival = datetime.strptime(f"{request.session['late_date']} {request.session['late_time']}", '%Y-%m-%d %H:%M')
+	
 	result = RideUser.objects.exclude(user = request.user).select_related("ride").filter(
 								Q(ride__end_loc = request.session['destination_address']) 
 							  & Q(ride__special_info = request.session['special_info'])
@@ -240,6 +266,7 @@ def showSearchResults(request):
 							  & Q(ride__arrival_time__lte = late_arrival)
 							  & Q(ride__shareable = True)
 							  & Q(ride__status = 'OPEN')).distinct('ride')
+	print(result)
 	# print(result)
 	if request.method == 'POST':
 		# need to know which option they chose
@@ -260,6 +287,8 @@ def showSearchResults(request):
 
 @login_required(login_url='rideshare:login')
 def editRideDetails(request, ride_id):
+	if not request.META.get('HTTP_REFERER'):
+		return redirect('rideshare:home')
 	context = {}
 	context['shared'] = True
 	ride_obj = get_object_or_404(Ride, pk=ride_id)
@@ -299,7 +328,6 @@ def editRideDetails(request, ride_id):
 		return render(request, 'rideshare/editRideDetails.html', context)
 	elif request.method == "POST":
 		if request.POST.get('leave') == "Leave Ride":
-			print('here')
 			if context['is_owner']:
 				ride_obj.delete()
 			else:
@@ -312,30 +340,37 @@ def editRideDetails(request, ride_id):
 			if request.POST.get('num_party') == '':
 				num_party = rideuser.num_party
 			else:
+				if int(request.POST.get('num_party')) < 1:
+					messages.info(request, 'Please check form.')
+					return render(request, 'rideshare/editRideDetails.html', context)
 				num_party = int(request.POST.get('num_party'))
 			if context['is_owner'] and not context['shared']:
-				print(request.POST.get('special_info'))
-				if request.POST.get('arrival_time') != None:
-					ride_obj.arrival_time = request.POST.get('arrival_time')
-				if request.POST.get('shareable') != None:
-					if request.POST.get('shareable') == 'on':
-						ride_obj.shareable = True
-					else:
-						ride_obj.shareable = False
-				if request.POST.get('special_info') != '':
+				
+				if request.POST['d'] != '' and request.POST['e'] != '':
+					date_str = request.POST['d']  # e.g., '2024-02-03'
+					time_str = request.POST['e']  # e.g., '14:30'
+					# Combine the date and time strings into a datetime object
+					newtime = datetime.strptime(f'{date_str} {time_str}', '%Y-%m-%d %H:%M')
+					
+					ride_obj.arrival_time = newtime
+				if request.POST.get('shareable') == 'on':
+					ride_obj.shareable = True
+				else:
+					ride_obj.shareable = False
+				if request.POST.get('special_info') != '' or request.POST.get('clear') == 'on':
+					print(request.POST.get('special_info'))
 					ride_obj.special_info = request.POST.get('special_info')
 				if request.POST.get('end_loc') != '':
 					ride_obj.end_loc = request.POST.get('end_loc')
 				ride_obj.num_passengers = num_party
 			else:
-				print(num_party)
 				ride_obj.num_passengers = ride_obj.num_passengers - rideuser.num_party + num_party
 			ride_obj.save()
 
 			rideuser.num_party = num_party
 			rideuser.save()
 			
-		return redirect("rideshare:home")
+		return redirect("rideshare:viewnoncomplete")
 
 @login_required(login_url='rideshare:login')
 def driverPage(request):
@@ -349,17 +384,22 @@ def showRidesForDriver(request):
 	if not Driver.objects.filter(user = request.user).exists():
 		return redirect('rideshare:home')
 	driver = get_object_or_404(Driver, user=request.user)
-	if request.method == 'GET':
-		# TODO: we need to check to see if this driver is a
-		rides = Ride.objects.filter(
+	rides = Ride.objects.filter(
             Q(status='OPEN') & 
             Q(num_passengers__lte=driver.max_passengers) &
 			Q(special_info=driver.special_info)
-        ).exclude(driver_user = driver)  # Exclude rides already claimed by this driver
+        ).exclude(driver_user = driver)
+	if request.method == 'GET':
+		# TODO: we need to check to see if this driver is a
+		  # Exclude rides already claimed by this driver
 		return render(request, 'rideshare/showRidesForDriver.html', {'rides': rides})
 	elif request.method == 'POST':
 		ride_id = request.POST.get('ride_id')
 		ride = Ride.objects.get(id = ride_id)
+		# check to see if this driver is the owner or a sharer of this ride
+		if RideUser.objects.filter(Q(ride=ride) & Q(user=request.user)).exists():
+			messages.info(request, 'You cannot drive for a ride that you are participating in')
+			return render(request, 'rideshare/showRidesForDriver.html', {'rides': rides})
 		ride.status = 'CONFIRMED'  
 		ride.driver_user = driver
 		ride.save()
@@ -406,7 +446,6 @@ def viewRideDetailsDriver(request, ride_id):
 
 	owner_user = RideUser.objects.get(user = ride.request_user, ride = ride)
 	share_user = RideUser.objects.filter(ride = ride).exclude(user = ride.request_user)
-	print(share_user)
 
 	context = {'ride_form': ride_form,'owner_user': owner_user, 'share_user': share_user}
 	return render(request, 'rideshare/viewRideDetailsDriver.html', context)

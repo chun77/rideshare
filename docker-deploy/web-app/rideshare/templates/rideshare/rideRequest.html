@@ -48,7 +48,9 @@
             <input type="submit" name="submit" id="submit" class="btn btn-primary btn-block" value="Make Ride Request">
           </div>
         </form>
-		{{form.errors}}
+        {% for message in messages %}
+        <p id="messages"> {{ message }}</p>
+      {% endfor %}
     <button onclick="location.href = '/rideshare/'" style=" align-items: center;  padding: 10px 20px;
 		font-size: 16px; display: block;
 		margin-top: 20px;
