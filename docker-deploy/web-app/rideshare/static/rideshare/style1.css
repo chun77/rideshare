@@ -1,0 +1,52 @@
+body {
+    font-family: Arial, sans-serif;
+}
+
+.content {
+    margin: 20px;
+}
+
+.ride-form {
+    margin-bottom: 10px;
+}
+
+.confirm-ride-btn {
+    padding: 10px 15px;
+    border: none;
+    cursor: pointer;
+    text-align: center;
+    display: block;
+    width: 100%;
+}
+
+.confirm-ride-btn:hover {
+}
+
+.messages p {
+}
+
+.back-button {
+    display: block;
+    width: 200px;
+    margin: 20px auto;
+    padding: 10px;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+}
+
+.back-button:hover {
+}
+
+.ride-details {
+    margin-bottom: 15px;
+}
+
+.ride-details label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.ride-details label span {
+    font-weight: bold;
+}

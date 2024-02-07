@@ -1,0 +1,16 @@
+/* styles.css */
+.hello-msg {
+    font-size: 18px;
+    margin-right: 20px;
+  }
+  
+.back-button {
+align-items: center;
+padding: 10px 20px;
+font-size: 16px;
+display: block;
+margin-top: 20px;
+margin-left: auto;
+margin-right: auto;
+}
+  
