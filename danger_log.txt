@@ -1,0 +1,33 @@
+Danger Log mjg85 & zw297:
+
+1. Non-drivers could access driver specific pages. Solution: check if the user appears in the driver database, if they don't then redirect to home page.
+
+2. During driver register, don't ask them for a user field because then they could register other people as drivers. Solution: Fix is just use request.user manually.
+
+3. make max passengers and party size minimum in html be 1. Solution: use .cleaned_data to manually check form.
+
+4. driver shouldn't be able to register again. Solution is same as 1 but reverse.
+
+5. when drivers try to resign, we can disallow it until they only have complete rides. Solution was check if they have any confirmed rides.
+
+6. should drivers be able to cancel on a ride? We decided this is not acceptable behavior for drivers.
+
+7. Driver tries to drive for a ride they are the owner of. fix was just check if they are participating, and if so error message and dont allow to drive for ride.
+
+8. Can the owner leave a ride that has sharers. No because who would become new owner.
+
+9. Going to web endpoints that you shouldn't be allowed to go to. Just do a check to see what link they came from.
+
+10. We decided to destroy the driver when he resigns, but to prevent him from resigning if he has any non-complete rides.
+
+11. User trying to edit someone else ride. Solution is to bounce them to home using HTTP referer.
+
+12. Non logged in users trying to use the website, use login_required for all views other than login, register.
+
+13. Do we need to verify the drivers vehicle and personal information, before allowing them to drive (check liscense plate). Maybe in real world app.
+
+14. Do we need to verify that the destination address is a valid address? Not in this toy app.
+
+15. We don't let ride owners change the arrival time if they have any sharers.
+
+16. Users shouldn't be able to cancel on confirmed rides.

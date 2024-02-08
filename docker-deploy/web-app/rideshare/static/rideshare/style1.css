@@ -12,7 +12,7 @@ body {
 }
 
 .confirm-ride-btn {
-    background-color: #4CAF50;
+    background-color: #123cc7;
     color: white;
     padding: 10px 15px;
     border: none;
@@ -23,7 +23,7 @@ body {
 }
 
 .confirm-ride-btn:hover {
-    background-color: #45a049;
+    background-color: #0553b2;
 }
 
 .messages p {
