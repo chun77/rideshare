@@ -1,32 +1,37 @@
-<!DOCTYPE html>
 {% load static %}
-
-<style>
-  .hello-msg{
-    font-size: 18px;
-    color: #fff;
-    margin-right: 20px;
-  }
-</style>
+<!DOCTYPE html>
 <html lang="en">
-  <body>
-    {% block content %}
-    {% for ride in rides %}
-      <form method="post">
-          {% csrf_token %}
-          <input type="hidden" name="ride_id" value="{{ ride.id }}">
-          <input type="submit" value="Confirm Ride {{ ride.id }} destination: {{ride.end_loc}} arrival_time: {{ride.arrival_time}} num_passengers: {{ride.num_passengers}}">
-      </form>
-        <br/>
-    {% endfor %}
-    {% for message in messages %}
-        <p id="messages"> {{ message }}</p>
-      {% endfor %}
-    {% endblock content %}
-    <button onclick="location.href = '/rideshare/driverpage'" style=" align-items: center;  padding: 10px 20px;
-		font-size: 16px; display: block;
-		margin-top: 20px;
-		margin-left: auto;
-		margin-right: auto;">Go Back To Driver Page</button>
-  </body>
+<head>
+    <meta charset="UTF-8">
+    <title>Rideshare</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link href="{% static 'rideshare/style1.css' %}" rel="stylesheet">
+</head>
+<body>
+    <div class="content">
+        {% block content %}
+        {% for ride in rides %}
+        <div class="ride-form">
+          <form method="post">
+              {% csrf_token %}
+              <input type="hidden" name="ride_id" value="{{ ride.id }}">
+              <div class="ride-details">
+                  <label>Ride ID: <span>{{ ride.id }}</span></label>
+                  <label>Destination: <span>{{ ride.end_loc }}</span></label>
+                  <label>Arrival Time: <span>{{ ride.arrival_time }}</span></label>
+                  <label>Passengers: <span>{{ ride.num_passengers }}</span></label>
+              </div>
+              <button type="submit" class="confirm-ride-btn">Confirm Ride</button>
+          </form>
+      </div>
+        {% endfor %}
+        <div class="messages">
+            {% for message in messages %}
+                <p>{{ message }}</p>
+            {% endfor %}
+        </div>
+        {% endblock content %}
+    </div>
+    <button onclick="location.href='/rideshare/driverpage'" class="back-button">Go Back To Driver Page</button>
+</body>
 </html>

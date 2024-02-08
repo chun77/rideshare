@@ -1,31 +1,32 @@
 <!DOCTYPE html>
 {% load static %}
 
-<style>
-  .hello-msg{
-    font-size: 18px;
-    color: #fff;
-    margin-right: 20px;
-  }
-</style>
 <html lang="en">
-  <body>
+<head>
+  <link rel="stylesheet" type="text/css" href="{% static 'rideshare/style2.css' %}">
+</head>
+<body>
+  <section class="content">
     {% block content %}
-    {% for obj in object_list %}
-        Ride {{ forloop.counter }} Destination: {{ obj.end_loc }} Arrival Time: {{ obj.arrival_time }}
-        <span><a class=".hello-msg" href = "{% url 'rideshare:viewridedetailsdriver' obj.id %}">View Ride Details</a></span>
-        <form method="post">
-          {% csrf_token %}
-          <input type="hidden" name="ride_id" value="{{ obj.id }}">
-          <input type="submit" value="Mark as Complete">
-      </form>
-        <br/>
-    {% endfor %}
-    {% endblock content %}
-    <button onclick="location.href = '/rideshare/driverpage'" style=" align-items: center;  padding: 10px 20px;
-		font-size: 16px; display: block;
-		margin-top: 20px;
-		margin-left: auto;
-		margin-right: auto;">Go Back To Driver Page</button>
-  </body>
+      {% for obj in object_list %}
+        <div class="ride-entry">
+          <div class="ride-details">
+            <p>Ride {{ forloop.counter }}</p>
+            <p>Destination: {{ obj.end_loc }}</p>
+            <p>Arrival Time: {{ obj.arrival_time }}</p>
+          </div>
+          <a class="hello-msg" href="{% url 'rideshare:viewridedetailsdriver' obj.id %}">View Ride Details</a>
+          <form method="post" class="completion-form">
+            {% csrf_token %}
+            <input type="hidden" name="ride_id" value="{{ obj.id }}">
+            <button type="submit" class="btn btn-success">Mark as Complete</button>
+          </form>
+        </div>
+      {% endfor %}
+    {% endblock %}
+  </section>
+  <footer>
+    <button class="back-button" onclick="location.href='/rideshare/driverpage'">Go Back To Driver Page</button>
+  </footer>
+</body>
 </html>

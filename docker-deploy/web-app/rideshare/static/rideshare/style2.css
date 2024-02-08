@@ -1,0 +1,69 @@
+body {
+  background-color: #f0f0f0;
+  font-family: Arial, sans-serif;
+}
+
+.content {
+  margin: 20px;
+}
+
+.ride-entry {
+  margin-bottom: 20px; /* Consistent with the .ride-form */
+}
+
+.ride-form, .completion-form {
+  margin-bottom: 10px;
+}
+
+.confirm-ride-btn, .btn-success {
+  background-color: #4CAF50; /* Color adjusted to match .confirm-ride-btn */
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  cursor: pointer;
+  text-align: center;
+  display: block;
+  width: 100%;
+}
+
+.confirm-ride-btn:hover, .btn-success:hover {
+  background-color: #45a049; /* Hover color adjusted to match .confirm-ride-btn */
+}
+
+.messages p {
+  color: #333;
+}
+
+.hello-msg {
+  font-size: 15px;
+  color: rgb(44, 6, 234); /* Color from the user's .hello-msg */
+  display: block;
+  margin-bottom: 10px;
+}
+
+.back-button {
+  align-items: center;
+  padding: 10px 20px;
+  font-size: 16px;
+  display: block;
+  margin-top: 20px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.back-button:hover {
+  background-color: #005f73;
+}
+
+.ride-details {
+  margin-bottom: 15px;
+}
+
+.ride-details label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.ride-details label span {
+  font-weight: bold;
+}
