@@ -18,7 +18,7 @@ services:
         - db
   web:
       build: ./web-app
-      user: nobody
+      user: root
       command: /code/runserver.sh
       volumes:
         - ./web-app:/code
