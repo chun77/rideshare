@@ -16,7 +16,7 @@ body {
 }
 
 .confirm-ride-btn, .btn-success {
-  background-color: #4CAF50; /* Color adjusted to match .confirm-ride-btn */
+  background-color: #0d27ea; /* Color adjusted to match .confirm-ride-btn */
   color: white;
   padding: 10px 15px;
   border: none;
@@ -27,7 +27,7 @@ body {
 }
 
 .confirm-ride-btn:hover, .btn-success:hover {
-  background-color: #45a049; /* Hover color adjusted to match .confirm-ride-btn */
+  background-color: #1e1bdc; /* Hover color adjusted to match .confirm-ride-btn */
 }
 
 .messages p {

@@ -12,7 +12,7 @@ input[type=text], select {
   /* Style the submit button */
   input[type=submit] {
     width: 100%;
-    background-color: #04AA6D;
+    background-color: #1f0fc8;
     color: white;
     padding: 14px 20px;
     margin: 8px 0;
@@ -23,5 +23,5 @@ input[type=text], select {
   
   /* Add a background color to the submit button on mouse-over */
   input[type=submit]:hover {
-    background-color: #45a049;
+    background-color: #1330d5;
   }
